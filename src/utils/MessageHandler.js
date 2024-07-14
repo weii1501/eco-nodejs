@@ -1,4 +1,3 @@
-const { BadRequestError, ServerError } = require("../core/error.response");
 const HandleError = require("../utils/HandleError");
 
 module.exports = async (bsfunction, req, res) => {

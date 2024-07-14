@@ -1,20 +1,8 @@
 "use strict";
 
-const STATUS_CODE = {
-  FORBIDDEN: 403,
-  NOT_FOUND: 404,
-  CONFLICT: 409,
-  INTERNAL_SERVER_ERROR: 500,
-  BAD_REQUEST: 400,
-};
+const STATUS_CODE = require("../utils/httpStatusCode")
 
-const REASON_STATUS = {
-  FORBIDDEN: "Bad Request Error",
-  NOT_FOUND: "Not Found Error",
-  CONFLICT: "Conflict Error",
-  INTERNAL_SERVER_ERROR: "Internal Server Error",
-  BAD_REQUEST: "Bad Request Error",
-};
+const REASON_STATUS = require("../utils/httpReasonStatus")
 
 class ErrorResponse extends Error {
   constructor(message, status) {
@@ -24,19 +12,19 @@ class ErrorResponse extends Error {
 }
 
 class ConflictRequestError extends ErrorResponse {
-  constructor({
+  constructor(
     message = REASON_STATUS.CONFLICT,
-    statusCode = STATUS_CODE.CONFLICT,
-  }) {
+    statusCode = STATUS_CODE.CONFLICT
+  ) {
     super(message, statusCode);
   }
 }
 
 class BadRequestError extends ErrorResponse {
-  constructor({
+  constructor(
     message = REASON_STATUS.BAD_REQUEST,
-    statusCode = STATUS_CODE.BAD_REQUEST,
-  }) {
+    statusCode = STATUS_CODE.BAD_REQUEST
+  ) {
     console.log(message);
     console.log(statusCode);
     super(message, statusCode);
@@ -44,16 +32,47 @@ class BadRequestError extends ErrorResponse {
 }
 
 class ServerError extends ErrorResponse {
-  constructor({
+  constructor(
     message = REASON_STATUS.INTERNAL_SERVER_ERROR,
-    statusCode = STATUS_CODE.INTERNAL_SERVER_ERROR,
+    statusCode = STATUS_CODE.INTERNAL_SERVER_ERROR
+  ) {
+    super(message, statusCode);
+  }
+}
+
+class AuthFailureError extends ErrorResponse {
+  constructor({
+    message = REASON_STATUS.UNAUTHORIZED,
+    statusCode = STATUS_CODE.UNAUTHORIZED,
   }) {
     super(message, statusCode);
   }
 }
 
+class NotFoundError extends ErrorResponse {
+  constructor({
+    message = REASON_STATUS.NOT_FOUND,
+    statusCode = STATUS_CODE.NOT_FOUND,
+  }) {
+    super(message, statusCode);
+  }
+}
+
+class ForbiddenError extends ErrorResponse {
+  constructor({
+    message = REASON_STATUS.FORBIDDEN,
+    statusCode = STATUS_CODE.FORBIDDEN,
+  }) {
+    super(message, statusCode);
+  }
+}
+
+
 module.exports = {
   ConflictRequestError,
   BadRequestError,
-  ServerError
+  ServerError,
+  AuthFailureError,
+  NotFoundError,
+  ForbiddenError
 };
