@@ -6,6 +6,7 @@ const compression = require("compression");
 const morgan = require("morgan");
 const app = express();
 const apiRouter = require("./routers");
+const cors = require("cors");
 
 // init middleware
 app.use(morgan("dev"));
@@ -13,6 +14,17 @@ app.use(helmet());
 app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(
+  cors({
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:5000',
+      'http://localhost:6363',
+      'http://localhost:7979',
+    ],
+    credentials: true,
+  }),
+);
 
 // init db
 require("./db/init.mongodb");
