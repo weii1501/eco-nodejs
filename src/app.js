@@ -14,17 +14,17 @@ app.use(helmet());
 app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(
-  cors({
-    origin: [
-      'http://localhost:3000',
-      'http://localhost:5000',
-      'http://localhost:6363',
-      'http://localhost:7979',
-    ],
-    credentials: true,
-  }),
-);
+// app.use(
+//   cors({
+//     origin: [
+//       'http://localhost:3000',
+//       'http://localhost:5000',
+//       'http://localhost:6363',
+//       'http://localhost:7979',
+//     ],
+//     credentials: true,
+//   }),
+// );
 
 // init db
 require("./db/init.mongodb");

@@ -23,6 +23,48 @@ const ROLE_SHOP = {
 };
 
 class AccessService {
+  static async handleRefreshTokenV2({ refreshToken, user, keyStore }) {
+    const { userId, email } = user;
+    console.log(keyStore.refreshTokensUsed.includes(refreshToken))
+    if (keyStore.refreshTokensUsed.includes(refreshToken)) {
+      await KeyTokenService.deleteKyById(keyStore._id);
+      throw new ForbiddenError("something went wrong? pls re-login");
+    }
+
+    if (keyStore.refreshToken !== refreshToken)
+      new AuthFailureError("Shop not registered");
+
+    const foundShop = await findByEmail({ email });
+    if (!foundShop) {
+      throw new AuthFailureError("Shop not registered");
+    }
+
+    const tokens = await createTokenPair(
+      { userId: foundShop._id, email },
+      keyStore.publicKey,
+      keyStore.privateKey
+    );
+
+
+    await keytokenModel.findOneAndUpdate(
+      { _id: keyStore._id },
+      {
+        $set: {
+          refreshToken: tokens.refreshToken,
+        },
+        $addToSet: {
+          refreshTokensUsed: refreshToken,
+        },
+      },
+      { new: true, useFindAndModify: false } // `new: true` to return the updated document
+    );
+
+    return {
+      user: { userId: userId, email },
+      tokens,
+    };
+  }
+
   /*
   check this token used or not
 
@@ -88,6 +130,7 @@ class AccessService {
   }
 
   static async logOut(keyStore) {
+    console.log("keyStore", keyStore);
     const delKey = await KeyTokenService.removeKeyById(keyStore._id);
     console.log("delKey", delKey);
     return delKey;

@@ -3,6 +3,7 @@
 const express = require("express");
 const accessRouter = require("./access");
 const { apiKey, permissions } = require("../auth/checkAuth");
+const productRouter = require("./product");
 
 const apiRouter = express.Router();
 
@@ -13,5 +14,8 @@ apiRouter.use(apiKey)
 apiRouter.use(permissions("0000"));
 
 apiRouter.use("/shop", accessRouter);
+apiRouter.use("/product", productRouter);
+
+
 
 module.exports = apiRouter;
