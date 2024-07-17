@@ -6,6 +6,7 @@ const {
   AuthFailureError,
   NotFoundError,
   ServerError,
+  ForbiddenError,
 } = require("../core/error.response");
 const KeyTokenService = require("../services/keyToken.service");
 
@@ -109,7 +110,7 @@ const authentication_v2 = asyncHandler(async (req, res, next) => {
     return next();
   } catch (error) {
     console.log(error);
-    throw new ServerError("Server Error");
+    throw new ForbiddenError("Forbidden Error");
   }
 });
 
